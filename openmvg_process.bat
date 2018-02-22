@@ -14,4 +14,13 @@ python "%PROJECT_FOLDER%\add_markers.py" "%PROJECT_FOLDER%\recons\sfm_data.json"
 
 REM sfm_data_aligned.bin is properly aligned and scaled
 
+%OPENMVG_BIN%\openMVG_main_openMVG2openMVS.exe -i "%PROJECT_FOLDER%\recons\sfm_data_aligned.bin" -o "%PROJECT_FOLDER%\recons\test.mvs" -d "%PROJECT_FOLDER%\undistort"
+
+set OPENMVS_BIN=d:\bin\openmvs
+MKDIR "%PROJECT_FOLDER%\mvs"
+COPY "%PROJECT_FOLDER%\recons\test.mvs" "%PROJECT_FOLDER%\mvs\test.mvs"
+%OPENMVS_BIN%\DensifyPointCloud.exe test.mvs -w "%PROJECT_FOLDER%\mvs" -v 2 --resolution-level 2 --estimate-colors 1
+%OPENMVS_BIN%\ReconstructMesh.exe test.mvs -w "%PROJECT_FOLDER%\mvs" -v 2 --decimate 1 --smooth 20 --quality-factor 1.0 --thickness-factor 0.1 --close-holes 20 --min-point-distance 2.5
+%OPENMVS_BIN%\RefineMesh.exe test_mesh.mvs -w "%PROJECT_FOLDER%\mvs" -v 2 --close-holes 0 --decimate 1 --max-face-area 0 --scales 1 --regularity-weight 0.05 --rigidity-elasticity-ratio 1.0
+
 
